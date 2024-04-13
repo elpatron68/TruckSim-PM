@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,7 +29,7 @@ namespace TruckSim_PM
             { 
                 throw new NotImplementedException();
             }
-
+            dgProfiles.ItemsSource = playerprofiles;
         }
     }
 }
