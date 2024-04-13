@@ -13,12 +13,19 @@ namespace TruckSim_PM
     {
         private string? _username;
         private string? _directory;
+        private string? _directoryshort;
         private bool _decrypted = false;
         private string? _etsats;
         public string Directory
         {
             get => _directory ?? "none";
             set => _directory = value;
+        }
+
+        public string DirectoryShort
+        {
+            get => _directoryshort ?? "none";
+            set => _directoryshort = value;
         }
         public string Username
         {
@@ -58,9 +65,11 @@ namespace TruckSim_PM
             string[] profilesubdirectories = System.IO.Directory.GetDirectories(profiledirectory);
             foreach (string subdirectory in profilesubdirectories)
             {
+                DirectoryInfo di = new(subdirectory);
                 PlayerProfile p = new()
                 {
                     Directory = subdirectory,
+                    DirectoryShort = di.Name,
                     Decrypted = false,
                     EtsAts = game.ToUpper(),
                     Username = subdirectory.DirectoryToScsUsername()

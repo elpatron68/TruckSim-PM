@@ -21,7 +21,6 @@ namespace TruckSim_PM
     {
         public MainWindow()
         {
-            InitializeComponent();
             List<PlayerProfile> playerprofiles = new();
             playerprofiles.AddRange(PlayerProfile.GetEtsProfiles(game:"ets"));
             playerprofiles.AddRange(PlayerProfile.GetEtsProfiles(game: "ats"));
@@ -29,7 +28,30 @@ namespace TruckSim_PM
             { 
                 throw new NotImplementedException();
             }
+            InitializeComponent();
             dgProfiles.ItemsSource = playerprofiles;
+        }
+
+        private void dgProfiles_Loaded(object sender, RoutedEventArgs e)
+        {
+            dgProfiles.Columns[0].Visibility = Visibility.Collapsed;
+            dgProfiles.Columns[3].Visibility = Visibility.Collapsed;
+            dgProfiles.Columns[4].Header = "Sim";
+        }
+
+        private void Copyprofile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Deleteprofile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Backupprofile_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
