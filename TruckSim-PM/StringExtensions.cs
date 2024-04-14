@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace TruckSim_PM
 {
@@ -51,6 +46,23 @@ namespace TruckSim_PM
                 ScSDirectoryname += hex;
             }
             return ScSDirectoryname;
+        }
+
+        public static bool IsHex(this IEnumerable<char> chars)
+        {
+            bool isHex;
+            foreach (char c in chars)
+            {
+                isHex = ((c >= '0' && c <= '9') ||
+                         (c >= 'a' && c <= 'f') ||
+                         (c >= 'A' && c <= 'F'));
+
+                if (!isHex)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

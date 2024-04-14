@@ -7,17 +7,14 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:TruckSim_PM"
         mc:Ignorable="d"
-        Title="TruckSim Profile Manager" 
+        Title="Truck Simulator Profile Manager" 
         Height="450" 
-        Width="800">
+        Width="600">
     <Grid>
-        <DataGrid x:Name="dgProfiles" 
-                  Loaded="dgProfiles_Loaded" 
-                  IsReadOnly="True">
-            <!--<DataGrid.Columns>
-                <DataGridTextColumn Header="Username"/>
-                <DataGridTextColumn Header="Directory"/>
-            </DataGrid.Columns>-->
+        <DataGrid x:Name="dgProfiles"  
+                  IsReadOnly="True" 
+                  Loaded="dgProfiles_Loaded"
+                  >
             <DataGrid.ContextMenu>
                 <ContextMenu x:Name="Copy" DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                     <MenuItem  Header="_Copy this profile to a new one" 
@@ -41,8 +38,28 @@
                             <iconPacks:PackIconMaterial Kind="ContentSave" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem  Header="_Decrypt profile.sii" 
+                        Click="Decryptprofile_Click" 
+                        CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
+                        <MenuItem.Icon>
+                            <iconPacks:PackIconMaterial Kind="Key" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem  Header="Open path in File _Explorer" 
+                        Click="Openpath_Click" 
+                        CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
+                        <MenuItem.Icon>
+                            <iconPacks:PackIconMaterial Kind="Folder" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
+        <StatusBar Name="sbar" 
+           VerticalAlignment="Bottom" Background="Beige" >
+            <StatusBarItem>
+                <TextBlock x:Name="statusBarText"></TextBlock>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </mah:MetroWindow>

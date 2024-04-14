@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 
 namespace TruckSim_PM
 {
@@ -19,39 +12,164 @@ namespace TruckSim_PM
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private List<PlayerProfile>? profiles;
         public MainWindow()
         {
-            List<PlayerProfile> playerprofiles = new();
-            playerprofiles.AddRange(PlayerProfile.GetEtsProfiles(game:"ets"));
-            playerprofiles.AddRange(PlayerProfile.GetEtsProfiles(game: "ats"));
-            if(playerprofiles.Count == 0) 
-            { 
-                throw new NotImplementedException();
-            }
             InitializeComponent();
-            dgProfiles.ItemsSource = playerprofiles;
+            LoadProfiles();
+            statusBarText.Text = "Right click on a row to copy, delete or backup a profile.";
+        }
+
+        private async void LoadProfiles()
+        {
+            profiles = [.. PlayerProfile.GetEtsProfiles(game: "ets"),
+                .. PlayerProfile.GetEtsProfiles(game: "ats")];
+
+            if (profiles.Count == 0)
+            {
+                await this.ShowMessageAsync("No profiles found", "No profiles found. You should deactivate Steam Cloud synchronization in the game´s profile settings.");
+            }
+            dgProfiles.ItemsSource = profiles;
+            dgProfiles.Items.Refresh();
+            statusBarText.Text = string.Format("{0} profiles found.", profiles.Count);
         }
 
         private void dgProfiles_Loaded(object sender, RoutedEventArgs e)
         {
+            if (profiles.Count > 0)
+            {
+                UpdateDatagrid();
+            }            
+        }
+ 
+        private void UpdateDatagrid()
+        {
             dgProfiles.Columns[0].Visibility = Visibility.Collapsed;
-            dgProfiles.Columns[3].Visibility = Visibility.Collapsed;
             dgProfiles.Columns[4].Header = "Sim";
         }
 
-        private void Copyprofile_Click(object sender, RoutedEventArgs e)
+        private async void Copyprofile_Click(object sender, RoutedEventArgs e)
         {
+            MenuItem menuItem = (MenuItem)sender;
+            ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
+            DataGrid item = (DataGrid)contextMenu.PlacementTarget;
+            PlayerProfile toCopy = (PlayerProfile)item.SelectedCells[0].Item;
+            string newusername = await this.ShowInputAsync("New User Name", "Enter your new user name (must be changed):") ?? string.Empty;
 
+            if (newusername == null ^
+                newusername == toCopy.Username ^
+                newusername == string.Empty)
+            {
+                // cancel
+                statusBarText.Text = string.Format("Copying canceled.");
+                return;
+            }
+            else if(newusername != null)
+            {
+                PlayerProfile.CopyProfile(toCopy, newusername);
+                if (dgProfiles.ItemsSource != null)
+                {
+                    dgProfiles.ItemsSource = null;
+                }
+                LoadProfiles();
+                UpdateDatagrid();
+                statusBarText.Text = string.Format("Profile {0} copied to {1}.", 
+                    toCopy.DirectoryShort, newusername.ScsUsernameToDirectory());
+            }
         }
 
         private void Deleteprofile_Click(object sender, RoutedEventArgs e)
         {
-
+            MenuItem menuItem = (MenuItem)sender;
+            ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
+            DataGrid item = (DataGrid)contextMenu.PlacementTarget;
+            PlayerProfile toDelete = (PlayerProfile)item.SelectedCells[0].Item;
+            PlayerProfile.DeleteProfile(toDelete);
+            if (dgProfiles.ItemsSource != null)
+            {
+                dgProfiles.ItemsSource = null;
+            }
+            LoadProfiles();
+            UpdateDatagrid();
+            statusBarText.Text = string.Format("Profile {0} deleted.", 
+                toDelete.DirectoryShort);
         }
 
         private void Backupprofile_Click(object sender, RoutedEventArgs e)
         {
+            MenuItem menuItem = (MenuItem)sender;
+            ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
+            DataGrid item = (DataGrid)contextMenu.PlacementTarget;
+            PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
 
+            string profiledirectory;
+            if (profile.EtsAts.ToLower() == "ets")
+            {
+                profiledirectory = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"Euro Truck Simulator 2\profiles");
+            }
+            else
+            {
+                profiledirectory = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"American Truck Simulator\profiles");
+            }
+
+            // Configure save file dialog box
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = string.Format("{0}.zip", profile.DirectoryShort);
+            saveFileDialog.DefaultExt = ".zip"; // Default file extension
+            saveFileDialog.Filter = "Zip files (.zip)|*.zip"; // Filter files by extension
+            saveFileDialog.Title = "Select directory and file name";
+            saveFileDialog.InitialDirectory = profiledirectory;
+
+            // Show save file dialog box
+            bool? result = saveFileDialog.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                string filename = saveFileDialog.FileName;
+                if (filename != null)
+                {
+                    PlayerProfile.BackupProfile(profile, filename);
+                    statusBarText.Text = string.Format("Profile {0} saved to {1}.", 
+                        profile.DirectoryShort, filename);
+                }
+                else
+                {
+                    statusBarText.Text = "Backup canceled, empty file name.";
+                }
+            }
+            else
+            {
+                statusBarText.Text = "Backup canceled.";
+            }
+        }
+
+        private void Openpath_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
+            DataGrid item = (DataGrid)contextMenu.PlacementTarget;
+            PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
+            Process.Start("explorer.exe", profile.Directory);
+            statusBarText.Text = string.Format("Started Explorer in profile {0}.", 
+                profile.DirectoryShort);
+        }
+
+        private void Decryptprofile_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
+            DataGrid item = (DataGrid)contextMenu.PlacementTarget;
+            PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
+            _ = PlayerProfile.DecryptFile(profile.Directory, "profile.sii");
+            LoadProfiles();
+            UpdateDatagrid();
+            statusBarText.Text = string.Format("Profile {0} decrypted.", 
+                profile.DirectoryShort);
         }
     }
 }
