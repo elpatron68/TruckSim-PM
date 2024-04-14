@@ -44,8 +44,11 @@ namespace TruckSim_PM
  
         private void UpdateDatagrid()
         {
-            dgProfiles.Columns[0].Visibility = Visibility.Collapsed;
-            dgProfiles.Columns[4].Header = "Sim";
+            if (profiles.Count > 0)
+            {
+                dgProfiles.Columns[0].Visibility = Visibility.Collapsed;
+                dgProfiles.Columns[4].Header = "Sim";
+            }
         }
 
         private async void Copyprofile_Click(object sender, RoutedEventArgs e)
