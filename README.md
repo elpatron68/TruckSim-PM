@@ -23,3 +23,11 @@ You must disable Steam Cloud usage for each profile. To stop using Steam Could: 
 ## Usage
 
 Should be self-explanatory, just right-click on a profile.
+
+## Privacy Statement
+
+As the author likes to know, if and how often this app is being used, a simple usage tracking was implemented. Absolutely no personal information (like directory- or user names) will be submitted.
+
+![image-20240415121945904](./assets/image-20240415121945904.png)
+
+Example usage tracking.
