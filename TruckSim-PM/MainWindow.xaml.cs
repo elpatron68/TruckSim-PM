@@ -81,8 +81,8 @@ namespace TruckSim_PM
                 UpdateDatagrid();
                 statusBarText.Text = string.Format("Profile {0} copied to {1}.", 
                     toCopy.DirectoryShort, newusername.ScsUsernameToDirectory());
-                NtfyUsage.SendUsage("Profile copied", string.Format("Profile {0} copied to {1}.",
-                    toCopy.DirectoryShort, newusername.ScsUsernameToDirectory()));
+                NtfyUsage.SendUsage("Profile copied", string.Format("A profile was copied. Platform: {0}",
+                    toCopy.EtsAts));
             }
         }
 
@@ -116,8 +116,8 @@ namespace TruckSim_PM
                 UpdateDatagrid();
                 statusBarText.Text = string.Format("Profile {0} deleted.",
                     toDelete.DirectoryShort);
-                NtfyUsage.SendUsage("Profile deleted", string.Format("Profile {0} deleted.",
-                    toDelete.DirectoryShort));
+                NtfyUsage.SendUsage("Profile deleted", string.Format("A profile was deleted. Platform: {0}",
+                    toDelete.EtsAts));
             }
             else
             {
@@ -174,8 +174,7 @@ namespace TruckSim_PM
                     PlayerProfile.BackupProfile(profile, filename);
                     statusBarText.Text = string.Format("Profile {0} saved to {1}.", 
                         profile.DirectoryShort, filename);
-                    NtfyUsage.SendUsage("Profile backup", string.Format("Profile {0} saved to {1}.",
-                        profile.DirectoryShort, filename));
+                    NtfyUsage.SendUsage("Profile backup", "A profile was backed up.");
                 }
                 else
                 {
