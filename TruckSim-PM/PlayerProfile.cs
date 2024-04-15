@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 
@@ -12,6 +13,8 @@ namespace TruckSim_PM
         private string? _directoryshort;
         private bool _decrypted = false;
         private string? _etsats;
+        private DateTime? _lastaccess;
+
         public string Directory
         {
             get => _directory ?? "none";
@@ -41,6 +44,12 @@ namespace TruckSim_PM
             set => _etsats = value;
         }
 
+        public DateTime? LastAccess
+        {
+            get => _lastaccess ?? null;
+            set => _lastaccess = value;
+        }
+
         public static List<PlayerProfile> GetEtsProfiles(string game="ets")
         {
             List<PlayerProfile> pf = new();
@@ -66,16 +75,18 @@ namespace TruckSim_PM
                     foreach (string subdirectory in profilesubdirectories)
                     {
                         DirectoryInfo di =new(subdirectory);
-                        var shortdir = di.Name;
-                        if (shortdir.IsHex())
+                        string shortdir = di.Name;
+                        if (shortdir.IsHex() & File.Exists(Path.Combine(subdirectory, "profile.sii")))
                         {
+                            TimeZoneInfo systemTimeZone = TimeZoneInfo.Local;
                             PlayerProfile p = new()
                             {
                                 Directory = subdirectory,
                                 DirectoryShort = shortdir,
                                 Decrypted = IsDecrypted(Path.Combine(subdirectory, "profile.sii")),
                                 EtsAts = game.ToUpper(),
-                                Username = subdirectory.DirectoryToScsUsername()
+                                Username = subdirectory.DirectoryToScsUsername(),
+                                LastAccess = di.LastAccessTime,
                             };
                             pf.Add(p);
                         }
@@ -84,22 +95,6 @@ namespace TruckSim_PM
             }
             return pf;
         }
-
-        // https://stackoverflow.com/questions/223832/check-a-string-to-see-if-all-characters-are-hexadecimal-values
-        //private bool IsHex(IEnumerable<char> chars)
-        //{
-        //    bool isHex;
-        //    foreach (var c in chars)
-        //    {
-        //        isHex = ((c >= '0' && c <= '9') ||
-        //                 (c >= 'a' && c <= 'f') ||
-        //                 (c >= 'A' && c <= 'F'));
-
-        //        if (!isHex)
-        //            return false;
-        //    }
-        //    return true;
-        //}
 
         public static void CopyProfile(PlayerProfile profile, string newusername)
         {
@@ -206,7 +201,7 @@ namespace TruckSim_PM
         private static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
         {
             // Get information about the source directory
-            var dir = new DirectoryInfo(sourceDir);
+            DirectoryInfo dir = new DirectoryInfo(sourceDir);
 
             // Check if the source directory exists
             if (!dir.Exists)

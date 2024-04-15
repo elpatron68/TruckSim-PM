@@ -47,12 +47,19 @@ namespace TruckSim_PM
             if (profiles.Count > 0)
             {
                 dgProfiles.Columns[0].Visibility = Visibility.Collapsed;
+                dgProfiles.Columns[3].Visibility = Visibility.Collapsed;
                 dgProfiles.Columns[4].Header = "Sim";
             }
         }
 
         private async void Copyprofile_Click(object sender, RoutedEventArgs e)
         {
+            if (IsTrucksimRunning() == true)
+            {
+                await this.ShowMessageAsync("Game is running", "You should end the game before copying a profile.");
+                statusBarText.Text = "Copy cancelled, game is running.";
+                return;
+            }
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
@@ -70,10 +77,10 @@ namespace TruckSim_PM
             else if(newusername != null)
             {
                 PlayerProfile.CopyProfile(toCopy, newusername);
-                if (dgProfiles.ItemsSource != null)
-                {
-                    dgProfiles.ItemsSource = null;
-                }
+                //if (dgProfiles.ItemsSource != null)
+                //{
+                //    dgProfiles.ItemsSource = null;
+                //}
                 LoadProfiles();
                 UpdateDatagrid();
                 statusBarText.Text = string.Format("Profile {0} copied to {1}.", 
@@ -81,25 +88,51 @@ namespace TruckSim_PM
             }
         }
 
-        private void Deleteprofile_Click(object sender, RoutedEventArgs e)
+        private async void Deleteprofile_Click(object sender, RoutedEventArgs e)
         {
+            if (IsTrucksimRunning() == true)
+            {
+                await this.ShowMessageAsync("Game is running", "You should end the game before deleting a profile.");
+                statusBarText.Text = "Delete profile cancelled, game is running.";
+                return;
+            }
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
             PlayerProfile toDelete = (PlayerProfile)item.SelectedCells[0].Item;
-            PlayerProfile.DeleteProfile(toDelete);
-            if (dgProfiles.ItemsSource != null)
+
+            MessageDialogResult result = await this.ShowMessageAsync("ARE YOU SURE?",
+                string.Format("Are you shure that you want to delete the profile of user {0}?", 
+                    toDelete.Username), MessageDialogStyle.AffirmativeAndNegative);
+
+            if(result == MessageDialogResult.Affirmative)
             {
-                dgProfiles.ItemsSource = null;
+                bool delresult = PlayerProfile.DeleteProfile(toDelete);
+                if (delresult == false)
+                {
+                    await this.ShowMessageAsync("Delete failed", "Deleting the profile failed. Maybe you have any file(s) openened, " + 
+                        "e.g. in a text editor or the directory is locked by another process.?");
+                    return;
+                }
+                LoadProfiles();
+                UpdateDatagrid();
+                statusBarText.Text = string.Format("Profile {0} deleted.",
+                    toDelete.DirectoryShort);
             }
-            LoadProfiles();
-            UpdateDatagrid();
-            statusBarText.Text = string.Format("Profile {0} deleted.", 
-                toDelete.DirectoryShort);
+            else
+            {
+                statusBarText.Text = "Deleting a profile cancelled.";
+            }
         }
 
-        private void Backupprofile_Click(object sender, RoutedEventArgs e)
+        private async void Backupprofile_Click(object sender, RoutedEventArgs e)
         {
+            if (IsTrucksimRunning() == true)
+            {
+                await this.ShowMessageAsync("Game is running", "You should end the game before copying a profile.");
+                statusBarText.Text = "Backup cancelled, game is running.";
+                return;
+            }
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
@@ -173,6 +206,19 @@ namespace TruckSim_PM
             UpdateDatagrid();
             statusBarText.Text = string.Format("Profile {0} decrypted.", 
                 profile.DirectoryShort);
+        }
+
+        private bool IsTrucksimRunning()
+        {
+            Process[] localAll = Process.GetProcesses();
+            foreach (Process p in localAll)
+            {
+                if(p.ProcessName.ToLower().Contains("eurotrucks2") ^ p.ProcessName.ToLower().Contains("amtrucks"))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

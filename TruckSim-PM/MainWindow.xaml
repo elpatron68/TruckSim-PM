@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Truck Simulator Profile Manager" 
         Height="450" 
-        Width="600">
+        Width="640">
     <Grid>
         <DataGrid x:Name="dgProfiles"  
                   IsReadOnly="True" 
