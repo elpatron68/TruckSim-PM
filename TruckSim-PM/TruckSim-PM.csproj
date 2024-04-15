@@ -25,6 +25,7 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.11.0" />
+    <PackageReference Include="ntfy" Version="0.5.0" />
   </ItemGroup>
 
 </Project>

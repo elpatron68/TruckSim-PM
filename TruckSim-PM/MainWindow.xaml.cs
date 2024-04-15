@@ -77,14 +77,12 @@ namespace TruckSim_PM
             else if(newusername != null)
             {
                 PlayerProfile.CopyProfile(toCopy, newusername);
-                //if (dgProfiles.ItemsSource != null)
-                //{
-                //    dgProfiles.ItemsSource = null;
-                //}
                 LoadProfiles();
                 UpdateDatagrid();
                 statusBarText.Text = string.Format("Profile {0} copied to {1}.", 
                     toCopy.DirectoryShort, newusername.ScsUsernameToDirectory());
+                NtfyUsage.SendUsage("Profile copied", string.Format("Profile {0} copied to {1}.",
+                    toCopy.DirectoryShort, newusername.ScsUsernameToDirectory()));
             }
         }
 
@@ -118,6 +116,8 @@ namespace TruckSim_PM
                 UpdateDatagrid();
                 statusBarText.Text = string.Format("Profile {0} deleted.",
                     toDelete.DirectoryShort);
+                NtfyUsage.SendUsage("Profile deleted", string.Format("Profile {0} deleted.",
+                    toDelete.DirectoryShort));
             }
             else
             {
@@ -174,6 +174,8 @@ namespace TruckSim_PM
                     PlayerProfile.BackupProfile(profile, filename);
                     statusBarText.Text = string.Format("Profile {0} saved to {1}.", 
                         profile.DirectoryShort, filename);
+                    NtfyUsage.SendUsage("Profile backup", string.Format("Profile {0} saved to {1}.",
+                        profile.DirectoryShort, filename));
                 }
                 else
                 {
