@@ -8,7 +8,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>baseline_local_shipping_black_36dp.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="baseline_local_shipping_black_36dp.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\..\..\..\..\tools\SII_Decrypt.exe" Link="SII_Decrypt.exe">
