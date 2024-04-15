@@ -54,7 +54,7 @@ DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 
 ## 3rd Party Licenses
 
-Please respect the licenses of these 3rd party licenses:
+Please respect the licenses of these 3rd party components:
 
 | Project Name                                                 | License                                  | Link                                                         |
 | ------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------------------ |
