@@ -56,7 +56,7 @@
             </DataGrid.ContextMenu>
         </DataGrid>
         <StatusBar Name="sbar" 
-           VerticalAlignment="Bottom" Background="Beige" >
+           VerticalAlignment="Bottom" Background="#548E19" >
             <StatusBarItem>
                 <TextBlock x:Name="statusBarText"></TextBlock>
             </StatusBarItem>
