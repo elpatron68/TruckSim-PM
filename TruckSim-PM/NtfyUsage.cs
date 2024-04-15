@@ -10,7 +10,8 @@ namespace TruckSim_PM
         public static async void SendUsage(string titletext, string messagetext)
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            DateTime builddate = File.GetCreationTime(Assembly.GetExecutingAssembly().Location);
+            DateTime buildDate = new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime;
+
             // Create a new client
             var client = new Client("https://ntfy.sh");
 
@@ -18,7 +19,7 @@ namespace TruckSim_PM
             var message = new SendingMessage
             {
                 Title = titletext,
-                Message = string.Format("{0}\nVersion: {1} ({2})", messagetext, version.ToString(), builddate.ToString())
+                Message = string.Format("{0}\nVersion: {1} ({2})", messagetext, version.ToString(), buildDate.ToString())
             };
             await client.Publish("3cQsIJnRdqimEACu", message);
         }
