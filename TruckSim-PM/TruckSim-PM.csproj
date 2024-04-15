@@ -26,13 +26,4 @@
     <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.11.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ToastNotifications">
-      <HintPath>..\..\ToastNotifications\Src\ToastNotifications\bin\Release\net8.0-windows\ToastNotifications.dll</HintPath>
-    </Reference>
-    <Reference Include="ToastNotifications.Messages">
-      <HintPath>..\..\ToastNotifications\Src\ToastNotifications.Messages\bin\Release\ToastNotifications.Messages.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
