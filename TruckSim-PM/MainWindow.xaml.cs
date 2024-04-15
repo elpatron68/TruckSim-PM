@@ -154,7 +154,7 @@ namespace TruckSim_PM
 
             // Configure save file dialog box
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.FileName = string.Format("{0}.zip", profile.DirectoryShort);
+            saveFileDialog.FileName = string.Format("{0}-{1}.zip", profile.DirectoryShort, DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss"));
             saveFileDialog.DefaultExt = ".zip"; // Default file extension
             saveFileDialog.Filter = "Zip files (.zip)|*.zip"; // Filter files by extension
             saveFileDialog.Title = "Select directory and file name";
