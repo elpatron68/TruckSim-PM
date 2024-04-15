@@ -18,6 +18,7 @@ namespace TruckSim_PM
             InitializeComponent();
             LoadProfiles();
             statusBarText.Text = "Right click on a row to copy, delete or backup a profile.";
+            NtfyUsage.SendUsage("Hallo", "Welt");
         }
 
         private async void LoadProfiles()

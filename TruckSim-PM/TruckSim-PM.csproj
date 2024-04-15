@@ -9,6 +9,7 @@
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>baseline_local_shipping_black_36dp.ico</ApplicationIcon>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

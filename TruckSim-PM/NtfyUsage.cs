@@ -1,5 +1,7 @@
 ﻿using ntfy.Requests;
 using ntfy;
+using System.Reflection;
+using System.IO;
 
 namespace TruckSim_PM
 {
@@ -7,6 +9,8 @@ namespace TruckSim_PM
     {
         public static async void SendUsage(string titletext, string messagetext)
         {
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            DateTime builddate = File.GetCreationTime(Assembly.GetExecutingAssembly().Location);
             // Create a new client
             var client = new Client("https://ntfy.sh");
 
@@ -14,7 +18,7 @@ namespace TruckSim_PM
             var message = new SendingMessage
             {
                 Title = titletext,
-                Message = messagetext,
+                Message = string.Format("{0}\nVersion: {1} ({2})", messagetext, version.ToString(), builddate.ToString())
             };
             await client.Publish("3cQsIJnRdqimEACu", message);
         }
