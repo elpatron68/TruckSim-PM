@@ -26,8 +26,40 @@ Should be self-explanatory, just right-click on a profile.
 
 ## Privacy Statement
 
-As the author likes to know, if and how often this app is being used, a simple usage tracking was implemented. Absolutely no personal information (like directory- or user names) will be submitted.
+As the author likes to know, if and how often this app is being used, a simple usage tracking was implemented. Absolutely no personal information (like directory- or user names or IP addresses) will be submitted.
 
 ![image-20240415121945904](./assets/image-20240415121945904.png)
 
 Example usage tracking.
+
+## License
+
+You can do whatever you want with *TruckSim Profile Manager*.
+
+```
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+```
+
+## 3rd Party Licenses
+
+Please respect the licenses of these 3rd party licenses:
+
+| Project Name                                                 | License                                  | Link                                                         |
+| ------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------------------ |
+| [SII_Decrypt](https://github.com/TheLazyTomcat/SII_Decrypt)  | Mozilla Public License Version 2.0       | https://www.mozilla.org/MPL/2.0/                             |
+| [Mahapps.Metro](https://github.com/MahApps/MahApps.Metro)    | MIT License                              | https://opensource.org/license/mit                           |
+| [Material Design Icons](https://github.com/MahApps/MahApps.Metro.IconPacks) | Apache License 2.0                       | https://github.com/google/material-design-icons/blob/master/LICENSE |
+| [ntfy.Net](https://github.com/nwithan8/ntfy-dotnet)          | GNU General Public License v3.0 or later | https://licenses.nuget.org/GPL-3.0-or-later                  |
+
