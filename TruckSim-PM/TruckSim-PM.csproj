@@ -19,6 +19,7 @@
     <None Include="..\..\..\..\..\..\tools\SII_Decrypt.exe" Link="SII_Decrypt.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\README.md" Link="README.md" />
   </ItemGroup>
 
   <ItemGroup>
