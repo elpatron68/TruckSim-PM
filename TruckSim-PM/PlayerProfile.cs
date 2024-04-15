@@ -13,7 +13,7 @@ namespace TruckSim_PM
         private string? _directoryshort;
         private bool _decrypted = false;
         private string? _etsats;
-        private DateTime? _lastaccess;
+        private string? _lastaccess;
 
         public string Directory
         {
@@ -44,7 +44,7 @@ namespace TruckSim_PM
             set => _etsats = value;
         }
 
-        public DateTime? LastAccess
+        public string? LastAccess
         {
             get => _lastaccess ?? null;
             set => _lastaccess = value;
@@ -78,7 +78,6 @@ namespace TruckSim_PM
                         string shortdir = di.Name;
                         if (shortdir.IsHex() & File.Exists(Path.Combine(subdirectory, "profile.sii")))
                         {
-                            TimeZoneInfo systemTimeZone = TimeZoneInfo.Local;
                             PlayerProfile p = new()
                             {
                                 Directory = subdirectory,
@@ -86,7 +85,7 @@ namespace TruckSim_PM
                                 Decrypted = IsDecrypted(Path.Combine(subdirectory, "profile.sii")),
                                 EtsAts = game.ToUpper(),
                                 Username = subdirectory.DirectoryToScsUsername(),
-                                LastAccess = di.LastAccessTime,
+                                LastAccess = di.LastWriteTime.ToString(),
                             };
                             pf.Add(p);
                         }
