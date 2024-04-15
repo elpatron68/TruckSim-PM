@@ -57,7 +57,7 @@ namespace TruckSim_PM
             if (IsTrucksimRunning() == true)
             {
                 await this.ShowMessageAsync("Game is running", "You should end the game before copying a profile.");
-                statusBarText.Text = "Copy cancelled, game is running.";
+                statusBarText.Text = "Copy canceled, game is running.";
                 return;
             }
             MenuItem menuItem = (MenuItem)sender;
@@ -65,6 +65,17 @@ namespace TruckSim_PM
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
             PlayerProfile toCopy = (PlayerProfile)item.SelectedCells[0].Item;
             string newusername = await this.ShowInputAsync("New User Name", "Enter your new user name (must be changed):") ?? string.Empty;
+
+            foreach(PlayerProfile p in profiles)
+            {
+                if (p.Username == newusername & p.EtsAts == toCopy.EtsAts)
+                {
+                    await this.ShowMessageAsync("Not unique", string.Format("The new user name must be unique. {0} is already used in profile {1}.",
+                        newusername, p.DirectoryShort));
+                    statusBarText.Text = "Copy canceled, non unique user name.";
+                    return;
+                }
+            }
 
             if (newusername == null ^
                 newusername == toCopy.Username ^
@@ -91,7 +102,7 @@ namespace TruckSim_PM
             if (IsTrucksimRunning() == true)
             {
                 await this.ShowMessageAsync("Game is running", "You should end the game before deleting a profile.");
-                statusBarText.Text = "Delete profile cancelled, game is running.";
+                statusBarText.Text = "Delete profile canceled, game is running.";
                 return;
             }
             MenuItem menuItem = (MenuItem)sender;
@@ -121,7 +132,7 @@ namespace TruckSim_PM
             }
             else
             {
-                statusBarText.Text = "Deleting a profile cancelled.";
+                statusBarText.Text = "Deleting a profile canceled.";
             }
         }
 
@@ -130,7 +141,7 @@ namespace TruckSim_PM
             if (IsTrucksimRunning() == true)
             {
                 await this.ShowMessageAsync("Game is running", "You should end the game before copying a profile.");
-                statusBarText.Text = "Backup cancelled, game is running.";
+                statusBarText.Text = "Backup canceled, game is running.";
                 return;
             }
             MenuItem menuItem = (MenuItem)sender;
