@@ -102,7 +102,7 @@ namespace TruckSim_PM
             PlayerProfile toDelete = (PlayerProfile)item.SelectedCells[0].Item;
 
             MessageDialogResult result = await this.ShowMessageAsync("ARE YOU SURE?",
-                string.Format("Are you shure that you want to delete the profile of user {0}?", 
+                string.Format("Are you shure to delete the profile of user {0}?", 
                     toDelete.Username), MessageDialogStyle.AffirmativeAndNegative);
 
             if(result == MessageDialogResult.Affirmative)
