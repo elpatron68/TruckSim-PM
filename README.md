@@ -14,11 +14,15 @@ I made *TruckSim Profile Manager* because I didn´t find another tool, which was
 
 ## Installation
 
-Download the latest version from Github [releases](https://github.com/elpatron68/TruckSim-PM/releases). Extract the ZIP file in a directory of your choice. Start `TruckSim-PM.exe` to launch the program.
+- Download the latest version from Github [releases](https://github.com/elpatron68/TruckSim-PM/releases). 
+- Extract the ZIP file in a directory of your choice. 
+- Start `TruckSim-PM.exe` to launch the program.
 
 ## Disable Steam Cloud Usage
 
-You must disable Steam Cloud usage for each profile. To stop using Steam Could: Start the game and at the profile selection screen select your profile then edit profile and uncheck the Steam Clould checkbox..
+You must disable Steam Cloud usage for each profile. To stop using Steam Cloud: Start the game and at the profile selection screen select your profile, then edit profile and uncheck the Steam Cloud checkbox:
+
+![](./assets/Profilesettings.png)
 
 ## Usage
 
