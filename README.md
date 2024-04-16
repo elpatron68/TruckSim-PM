@@ -26,7 +26,23 @@ You must disable Steam Cloud usage for each profile. To stop using Steam Cloud: 
 
 ## Usage
 
-Should be self-explanatory, just right-click on a profile.
+Should be self-explanatory, just right-click on a profile:
+
+### Copy Profile
+
+Asks for a new user name, decrypts `profle.sii`, replaces user name and copies the selected profile to a new one.
+
+### Delete Profile
+
+Deletes the selected profile directory.
+
+### Backup Profile
+
+Asks for a file name and archives the selected profile directory to a zip file. Restore by extracting the file to the profiles directory.
+
+### Decrypt profile.sii
+
+Decrypt the profile configuration file (for manual editing).
 
 ## Privacy Statement
 
