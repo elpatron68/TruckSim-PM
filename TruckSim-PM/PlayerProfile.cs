@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using TruckSim_PM.Properties;
 
 namespace TruckSim_PM
 {
@@ -178,8 +179,18 @@ namespace TruckSim_PM
         // Use SII_Decrypt.exe for decrypting sii files
         public static bool DecryptFile(string directory, string filename)
         {
+            string tempExeName = Path.Combine(Path.GetTempPath(), "SII_Decrypt.exe");
+
+
+            using (FileStream fsDst = new FileStream(tempExeName, FileMode.CreateNew, FileAccess.Write))
+            {
+                byte[] bytes = Resources.GetSII_Decrypt();
+
+                fsDst.Write(bytes, 0, bytes.Length);
+            }
+
             using Process process = new();
-            process.StartInfo.FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SII_Decrypt.exe");
+            process.StartInfo.FileName = tempExeName;
             process.StartInfo.Arguments = filename;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
