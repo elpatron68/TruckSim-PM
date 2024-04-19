@@ -179,14 +179,18 @@ namespace TruckSim_PM
         // Use SII_Decrypt.exe for decrypting sii files
         public static bool DecryptFile(string directory, string filename)
         {
-            string tempExeName = Path.Combine(Path.GetTempPath(), "SII_Decrypt.exe");
+            string tempExeName = Path.Combine(Path.GetTempPath(), 
+                "SII_Decrypt.exe");
 
-
-            using (FileStream fsDst = new FileStream(tempExeName, FileMode.CreateNew, FileAccess.Write))
+            if (!File.Exists(tempExeName))
             {
+                using FileStream fileStream = new(tempExeName, 
+                    FileMode.CreateNew, 
+                    FileAccess.Write);
                 byte[] bytes = Resources.GetSII_Decrypt();
 
-                fsDst.Write(bytes, 0, bytes.Length);
+                fileStream.Write(bytes, 0, bytes.Length);
+                fileStream.Close();
             }
 
             using Process process = new();
