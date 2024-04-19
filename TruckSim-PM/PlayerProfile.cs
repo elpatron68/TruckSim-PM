@@ -204,11 +204,8 @@ namespace TruckSim_PM
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            if (output.Contains("Result: File is a plain-text SII (1)") ^
-                output.Contains("Result: Success (0)"))
-            { return true; }
-            else
-            { return false; }
+            return output.Contains("Result: File is a plain-text SII (1)") ^
+                output.Contains("Result: Success (0)");
         }
 
         // https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
