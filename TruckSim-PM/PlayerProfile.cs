@@ -191,6 +191,11 @@ namespace TruckSim_PM
 
                 fileStream.Write(bytes, 0, bytes.Length);
                 fileStream.Close();
+                if (!File.Exists(tempExeName))
+                {
+                    NtfyUsage.SendUsage("SII_Decrypt.exe", $"Write file {tempExeName} failed.");
+                    return false;
+                }
             }
 
             using Process process = new();

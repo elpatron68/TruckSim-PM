@@ -64,37 +64,41 @@ namespace TruckSim_PM
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
             PlayerProfile toCopy = (PlayerProfile)item.SelectedCells[0].Item;
-            string newusername = await this.ShowInputAsync("New User Name", "Enter your new user name (must be changed):") ?? string.Empty;
-
-            foreach(PlayerProfile p in profiles)
+            if (item.SelectedItem != null)
             {
-                if (p.Username == newusername & p.EtsAts == toCopy.EtsAts)
+                string newusername = await this.ShowInputAsync("New User Name", "Enter your new user name (must be changed):") ?? string.Empty;
+
+                foreach (PlayerProfile p in profiles)
                 {
-                    await this.ShowMessageAsync("Not unique", string.Format("The new user name must be unique. {0} is already used in profile {1}.",
-                        newusername, p.DirectoryShort));
-                    statusBarText.Text = "Copy canceled, non unique user name.";
+                    if (p.Username == newusername & p.EtsAts == toCopy.EtsAts)
+                    {
+                        await this.ShowMessageAsync("Not unique", string.Format("The new user name must be unique. {0} is already used in profile {1}.",
+                            newusername, p.DirectoryShort));
+                        statusBarText.Text = "Copy canceled, non unique user name.";
+                        return;
+                    }
+                }
+
+                if (newusername == null ^
+                    newusername == toCopy.Username ^
+                    newusername == string.Empty)
+                {
+                    // cancel
+                    statusBarText.Text = string.Format("Copying canceled.");
                     return;
                 }
+                else if (newusername != null)
+                {
+                    PlayerProfile.CopyProfile(toCopy, newusername);
+                    LoadProfiles();
+                    UpdateDatagrid();
+                    statusBarText.Text = string.Format("Profile {0} copied to {1}.",
+                        toCopy.DirectoryShort, newusername.ScsUsernameToDirectory());
+                    NtfyUsage.SendUsage("Profile copied", string.Format("A profile was copied. Platform: {0}",
+                        toCopy.EtsAts));
+                }
             }
-
-            if (newusername == null ^
-                newusername == toCopy.Username ^
-                newusername == string.Empty)
-            {
-                // cancel
-                statusBarText.Text = string.Format("Copying canceled.");
-                return;
-            }
-            else if(newusername != null)
-            {
-                PlayerProfile.CopyProfile(toCopy, newusername);
-                LoadProfiles();
-                UpdateDatagrid();
-                statusBarText.Text = string.Format("Profile {0} copied to {1}.", 
-                    toCopy.DirectoryShort, newusername.ScsUsernameToDirectory());
-                NtfyUsage.SendUsage("Profile copied", string.Format("A profile was copied. Platform: {0}",
-                    toCopy.EtsAts));
-            }
+            statusBarText.Text = "No profile selected.";
         }
 
         private async void Deleteprofile_Click(object sender, RoutedEventArgs e)
@@ -108,31 +112,38 @@ namespace TruckSim_PM
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
-            PlayerProfile toDelete = (PlayerProfile)item.SelectedCells[0].Item;
-
-            MessageDialogResult result = await this.ShowMessageAsync("ARE YOU SURE?",
-                string.Format("Are you shure to delete the profile of user {0}?", 
-                    toDelete.Username), MessageDialogStyle.AffirmativeAndNegative);
-
-            if(result == MessageDialogResult.Affirmative)
+            if (item.SelectedItem != null)
             {
-                bool delresult = PlayerProfile.DeleteProfile(toDelete);
-                if (delresult == false)
+                PlayerProfile toDelete = (PlayerProfile)item.SelectedCells[0].Item;
+
+                MessageDialogResult result = await this.ShowMessageAsync("ARE YOU SURE?",
+                    string.Format("Are you shure to delete the profile of user {0}?",
+                        toDelete.Username), MessageDialogStyle.AffirmativeAndNegative);
+
+                if (result == MessageDialogResult.Affirmative)
                 {
-                    await this.ShowMessageAsync("Delete failed", "Deleting the profile failed. Maybe you have any file(s) openened, " + 
-                        "e.g. in a text editor or the directory is locked by another process.?");
-                    return;
+                    bool delresult = PlayerProfile.DeleteProfile(toDelete);
+                    if (delresult == false)
+                    {
+                        await this.ShowMessageAsync("Delete failed", "Deleting the profile failed. Maybe you have any file(s) openened, " +
+                            "e.g. in a text editor or the directory is locked by another process.?");
+                        return;
+                    }
+                    LoadProfiles();
+                    UpdateDatagrid();
+                    statusBarText.Text = string.Format("Profile {0} deleted.",
+                        toDelete.DirectoryShort);
+                    NtfyUsage.SendUsage("Profile deleted", string.Format("A profile was deleted. Platform: {0}",
+                        toDelete.EtsAts));
                 }
-                LoadProfiles();
-                UpdateDatagrid();
-                statusBarText.Text = string.Format("Profile {0} deleted.",
-                    toDelete.DirectoryShort);
-                NtfyUsage.SendUsage("Profile deleted", string.Format("A profile was deleted. Platform: {0}",
-                    toDelete.EtsAts));
+                else
+                {
+                    statusBarText.Text = "Deleting a profile canceled.";
+                }
             }
             else
             {
-                statusBarText.Text = "Deleting a profile canceled.";
+                statusBarText.Text = "No profile selected.";
             }
         }
 
@@ -147,54 +158,61 @@ namespace TruckSim_PM
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
-            PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
-
-            string profiledirectory;
-            if (profile.EtsAts.ToLower() == "ets")
+            if (item.SelectedItem != null)
             {
-                profiledirectory = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"Euro Truck Simulator 2\profiles");
-            }
-            else
-            {
-                profiledirectory = System.IO.Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"American Truck Simulator\profiles");
-            }
+                PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
 
-            // Configure save file dialog box
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                FileName = string.Format("{0}-{1}.zip", profile.DirectoryShort, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss")),
-                DefaultExt = ".zip", // Default file extension
-                Filter = "Zip files (.zip)|*.zip", // Filter files by extension
-                Title = "Select directory and file name",
-                InitialDirectory = profiledirectory
-            };
-
-            // Show save file dialog box
-            bool? result = saveFileDialog.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {
-                string filename = saveFileDialog.FileName;
-                if (filename != null)
+                string profiledirectory;
+                if (profile.EtsAts.ToLower() == "ets")
                 {
-                    PlayerProfile.BackupProfile(profile, filename);
-                    statusBarText.Text = string.Format("Profile {0} saved to {1}.", 
-                        profile.DirectoryShort, filename);
-                    NtfyUsage.SendUsage("Profile backup", "A profile was backed up.");
+                    profiledirectory = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    @"Euro Truck Simulator 2\profiles");
                 }
                 else
                 {
-                    statusBarText.Text = "Backup canceled, empty file name.";
+                    profiledirectory = System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    @"American Truck Simulator\profiles");
+                }
+
+                // Configure save file dialog box
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    FileName = string.Format("{0}-{1}.zip", profile.DirectoryShort, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss")),
+                    DefaultExt = ".zip", // Default file extension
+                    Filter = "Zip files (.zip)|*.zip", // Filter files by extension
+                    Title = "Select directory and file name",
+                    InitialDirectory = profiledirectory
+                };
+
+                // Show save file dialog box
+                bool? result = saveFileDialog.ShowDialog();
+
+                // Process save file dialog box results
+                if (result == true)
+                {
+                    string filename = saveFileDialog.FileName;
+                    if (filename != null)
+                    {
+                        PlayerProfile.BackupProfile(profile, filename);
+                        statusBarText.Text = string.Format("Profile {0} saved to {1}.",
+                            profile.DirectoryShort, filename);
+                        NtfyUsage.SendUsage("Profile backup", "A profile was backed up.");
+                    }
+                    else
+                    {
+                        statusBarText.Text = "Backup canceled, empty file name.";
+                    }
+                }
+                else
+                {
+                    statusBarText.Text = "Backup canceled.";
                 }
             }
             else
             {
-                statusBarText.Text = "Backup canceled.";
+                statusBarText.Text = "No profile selected.";
             }
         }
 
@@ -203,10 +221,16 @@ namespace TruckSim_PM
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
-            PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
-            Process.Start("explorer.exe", profile.Directory);
-            statusBarText.Text = string.Format("Started Explorer in profile {0}.", 
-                profile.DirectoryShort);
+            if (item.SelectedItem != null)
+            {
+                PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
+                Process.Start("explorer.exe", profile.Directory);
+                statusBarText.Text = $"Started Explorer in profile {profile.DirectoryShort}.";
+            }
+            else
+            {
+                statusBarText.Text = "No profile selected.";
+            }
         }
 
         private void Decryptprofile_Click(object sender, RoutedEventArgs e)
@@ -214,12 +238,19 @@ namespace TruckSim_PM
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
-            PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
-            _ = PlayerProfile.DecryptFile(profile.Directory, "profile.sii");
-            LoadProfiles();
-            UpdateDatagrid();
-            statusBarText.Text = string.Format("Profile {0} decrypted.", 
-                profile.DirectoryShort);
+            if (item.SelectedItem != null)
+            {
+                PlayerProfile profile = (PlayerProfile)item.SelectedCells[0].Item;
+                _ = PlayerProfile.DecryptFile(profile.Directory, "profile.sii");
+                LoadProfiles();
+                UpdateDatagrid();
+                statusBarText.Text = string.Format("Profile {0} decrypted.",
+                    profile.DirectoryShort);
+            }
+            else
+            {
+                statusBarText.Text = "No profile selected.";
+            }
         }
 
         private bool IsTrucksimRunning()
