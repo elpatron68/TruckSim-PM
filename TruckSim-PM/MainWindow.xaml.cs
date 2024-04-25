@@ -251,11 +251,14 @@ namespace TruckSim_PM
         private bool IsTrucksimRunning()
         {
             Process[] localAll = Process.GetProcesses();
-            foreach (Process p in localAll)
+            if (localAll.Length > 0)
             {
-                if(p.ProcessName.ToLower().Contains("eurotrucks2") ^ p.ProcessName.ToLower().Contains("amtrucks"))
+                foreach (Process p in localAll)
                 {
-                    return true;
+                    if (p.ProcessName.ToLower().Contains("eurotrucks2") ^ p.ProcessName.ToLower().Contains("amtrucks"))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
