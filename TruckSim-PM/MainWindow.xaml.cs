@@ -63,9 +63,10 @@ namespace TruckSim_PM
             MenuItem menuItem = (MenuItem)sender;
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             DataGrid item = (DataGrid)contextMenu.PlacementTarget;
-            PlayerProfile toCopy = (PlayerProfile)item.SelectedCells[0].Item;
+            
             if (item.SelectedItem != null)
             {
+                PlayerProfile toCopy = (PlayerProfile)item.SelectedCells[0].Item;
                 string newusername = await this.ShowInputAsync("New User Name", "Enter your new user name (must be changed):") ?? string.Empty;
 
                 foreach (PlayerProfile p in profiles)
