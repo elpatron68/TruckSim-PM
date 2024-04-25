@@ -31,7 +31,7 @@ namespace TruckSim_PM
             }
             dgProfiles.ItemsSource = profiles;
             dgProfiles.Items.Refresh();
-            statusBarText.Text = string.Format("{0} profiles found.", profiles.Count);
+            statusBarText.Text = $"{profiles.Count} profiles found.";
         }
 
         private void dgProfiles_Loaded(object sender, RoutedEventArgs e)
@@ -73,8 +73,8 @@ namespace TruckSim_PM
                 {
                     if (p.Username == newusername & p.EtsAts == toCopy.EtsAts)
                     {
-                        await this.ShowMessageAsync("Not unique", string.Format("The new user name must be unique. {0} is already used in profile {1}.",
-                            newusername, p.DirectoryShort));
+                        await this.ShowMessageAsync("Not unique",
+                            $"The new user name must be unique. {newusername} is already used in profile {p.DirectoryShort}.");
                         statusBarText.Text = "Copy canceled, non unique user name.";
                         return;
                     }
@@ -93,10 +93,8 @@ namespace TruckSim_PM
                     PlayerProfile.CopyProfile(toCopy, newusername);
                     LoadProfiles();
                     UpdateDatagrid();
-                    statusBarText.Text = string.Format("Profile {0} copied to {1}.",
-                        toCopy.DirectoryShort, newusername.ScsUsernameToDirectory());
-                    NtfyUsage.SendUsage("Profile copied", string.Format("A profile was copied. Platform: {0}",
-                        toCopy.EtsAts));
+                    statusBarText.Text = $"Profile {toCopy.DirectoryShort} copied to {newusername.ScsUsernameToDirectory()}.";
+                    NtfyUsage.SendUsage("Profile copied", $"A profile was copied. Platform: {toCopy.EtsAts}");
                 }
             }
             statusBarText.Text = "No profile selected.";
@@ -118,8 +116,8 @@ namespace TruckSim_PM
                 PlayerProfile toDelete = (PlayerProfile)item.SelectedCells[0].Item;
 
                 MessageDialogResult result = await this.ShowMessageAsync("ARE YOU SURE?",
-                    string.Format("Are you shure to delete the profile of user {0}?",
-                        toDelete.Username), MessageDialogStyle.AffirmativeAndNegative);
+                    $"Are you shure to delete the profile of user {toDelete.Username}?", 
+                    MessageDialogStyle.AffirmativeAndNegative);
 
                 if (result == MessageDialogResult.Affirmative)
                 {
@@ -132,10 +130,8 @@ namespace TruckSim_PM
                     }
                     LoadProfiles();
                     UpdateDatagrid();
-                    statusBarText.Text = string.Format("Profile {0} deleted.",
-                        toDelete.DirectoryShort);
-                    NtfyUsage.SendUsage("Profile deleted", string.Format("A profile was deleted. Platform: {0}",
-                        toDelete.EtsAts));
+                    statusBarText.Text = $"Profile {toDelete.DirectoryShort} deleted.";
+                    NtfyUsage.SendUsage("Profile deleted", $"A profile was deleted. Platform: {toDelete.EtsAts}");
                 }
                 else
                 {
@@ -180,7 +176,7 @@ namespace TruckSim_PM
                 // Configure save file dialog box
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    FileName = string.Format("{0}-{1}.zip", profile.DirectoryShort, DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss")),
+                    FileName = $"{profile.DirectoryShort}-{DateTime.Now:yyyy-dd-M_HH-mm-ss}.zip",
                     DefaultExt = ".zip", // Default file extension
                     Filter = "Zip files (.zip)|*.zip", // Filter files by extension
                     Title = "Select directory and file name",
@@ -197,8 +193,7 @@ namespace TruckSim_PM
                     if (filename != null)
                     {
                         PlayerProfile.BackupProfile(profile, filename);
-                        statusBarText.Text = string.Format("Profile {0} saved to {1}.",
-                            profile.DirectoryShort, filename);
+                        statusBarText.Text = $"Profile {profile.DirectoryShort} saved to {filename}.";
                         NtfyUsage.SendUsage("Profile backup", "A profile was backed up.");
                     }
                     else
@@ -245,8 +240,7 @@ namespace TruckSim_PM
                 _ = PlayerProfile.DecryptFile(profile.Directory, "profile.sii");
                 LoadProfiles();
                 UpdateDatagrid();
-                statusBarText.Text = string.Format("Profile {0} decrypted.",
-                    profile.DirectoryShort);
+                statusBarText.Text = $"Profile {profile.DirectoryShort} decrypted.";
             }
             else
             {
