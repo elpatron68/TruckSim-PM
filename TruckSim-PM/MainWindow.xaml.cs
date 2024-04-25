@@ -54,7 +54,7 @@ namespace TruckSim_PM
 
         private async void Copyprofile_Click(object sender, RoutedEventArgs e)
         {
-            if (IsTrucksimRunning() == true)
+            if (IsTrucksimRunning == true)
             {
                 await this.ShowMessageAsync("Game is running", "You should end the game before copying a profile.");
                 statusBarText.Text = "Copy canceled, game is running.";
@@ -102,7 +102,7 @@ namespace TruckSim_PM
 
         private async void Deleteprofile_Click(object sender, RoutedEventArgs e)
         {
-            if (IsTrucksimRunning() == true)
+            if (IsTrucksimRunning == true)
             {
                 await this.ShowMessageAsync("Game is running", "You should end the game before deleting a profile.");
                 statusBarText.Text = "Delete profile canceled, game is running.";
@@ -146,7 +146,7 @@ namespace TruckSim_PM
 
         private async void Backupprofile_Click(object sender, RoutedEventArgs e)
         {
-            if (IsTrucksimRunning() == true)
+            if (IsTrucksimRunning == true)
             {
                 await this.ShowMessageAsync("Game is running", "You should end the game before copying a profile.");
                 statusBarText.Text = "Backup canceled, game is running.";
@@ -248,20 +248,23 @@ namespace TruckSim_PM
             }
         }
 
-        private bool IsTrucksimRunning()
+        private static bool IsTrucksimRunning
         {
-            Process[] localAll = Process.GetProcesses();
-            if (localAll.Length > 0)
+            get
             {
-                foreach (Process p in localAll)
+                Process[] localAll = Process.GetProcesses();
+                if (localAll.Length > 0)
                 {
-                    if (p.ProcessName.ToLower().Contains("eurotrucks2") ^ p.ProcessName.ToLower().Contains("amtrucks"))
+                    foreach (Process p in localAll)
                     {
-                        return true;
+                        if (p.ProcessName.ToLower().Contains("eurotrucks2") ^ p.ProcessName.ToLower().Contains("amtrucks"))
+                        {
+                            return true;
+                        }
                     }
                 }
+                return false;
             }
-            return false;
         }
     }
 }
