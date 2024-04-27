@@ -13,39 +13,48 @@
     <Grid>
         <DataGrid x:Name="dgProfiles"  
                   IsReadOnly="True" 
-                  Loaded="dgProfiles_Loaded"
+                  Loaded="DgProfiles_Loaded" 
+                  SelectionMode="Single" 
                   >
             <DataGrid.ContextMenu>
-                <ContextMenu x:Name="Copy" DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                    <MenuItem  Header="_Copy this profile to a new one" 
+                <ContextMenu x:Name="contextmenu" 
+                             DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
+                             >
+                    <MenuItem x:Name="ctxCopy"
+                        Header="_Copy this profile to a new one" 
                        Click="Copyprofile_Click" 
-                       CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
+                       CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}"
+                               >
                         <MenuItem.Icon>
                             <iconPacks:PackIconMaterial Kind="ContentCopy" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem  Header="_Delete this profile" 
+                    <MenuItem x:Name="ctxDelete"
+                        Header="_Delete this profile" 
                         Click="Deleteprofile_Click" 
                         CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
                         <MenuItem.Icon>
                             <iconPacks:PackIconMaterial Kind="Delete" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem  Header="_Backup this profile" 
+                    <MenuItem x:Name="ctxBackup"
+                        Header="_Backup this profile" 
                         Click="Backupprofile_Click" 
                         CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
                         <MenuItem.Icon>
                             <iconPacks:PackIconMaterial Kind="ContentSave" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem  Header="_Decrypt profile.sii" 
+                    <MenuItem x:Name="ctxDecrypt"
+                        Header="_Decrypt profile.sii" 
                         Click="Decryptprofile_Click" 
                         CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
                         <MenuItem.Icon>
                             <iconPacks:PackIconMaterial Kind="Key" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem  Header="Open path in File _Explorer" 
+                    <MenuItem x:Name="ctxExplorer"
+                        Header="Open path in File _Explorer" 
                         Click="Openpath_Click" 
                         CommandParameter="{Binding Parent, RelativeSource={RelativeSource Self}}">
                         <MenuItem.Icon>

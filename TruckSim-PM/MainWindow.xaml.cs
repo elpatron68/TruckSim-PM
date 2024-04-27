@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -34,7 +36,7 @@ namespace TruckSim_PM
             statusBarText.Text = $"{profiles.Count} profiles found.";
         }
 
-        private void dgProfiles_Loaded(object sender, RoutedEventArgs e)
+        private void DgProfiles_Loaded(object sender, RoutedEventArgs e)
         {
             if (profiles.Count > 0)
             {
@@ -266,5 +268,11 @@ namespace TruckSim_PM
                 return false;
             }
         }
+
+        private void mnuCopy_Click(object sender, RoutedEventArgs e)
+        {
+            this.ShowMessageAsync("Test", "Na?");
+        }
+
     }
 }
