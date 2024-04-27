@@ -16,6 +16,11 @@
                   Loaded="DgProfiles_Loaded" 
                   SelectionMode="Single" 
                   >
+            <DataGrid.Style>
+                <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+                    <Setter Property="AlternatingRowBackground" Value="#545454"/>
+                </Style>
+            </DataGrid.Style>
             <DataGrid.ContextMenu>
                 <ContextMenu x:Name="contextmenu" 
                              DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
